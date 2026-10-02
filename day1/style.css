@@ -1,0 +1,169 @@
+/* 1. Reset Box Model */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* 2. Global Body Styles */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #222;
+  background-color: #f4f6f8; /* Matches lesson spec */
+}
+
+/* 3. Header */
+header {
+  background-color: #8e0000; /* Dark red per lesson */
+  color: white;
+  text-align: center;
+  padding: 24px 16px;
+}
+
+header h1 {
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+}
+
+header p {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-bottom: 1rem;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+nav a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 4. Main Content & Cards */
+main {
+  max-width: 640px; /* Matches lesson spec */
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+section {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+/* 5. Flexbox Form - UPDATED WITH WRAP */
+#note-form {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap; /* ✅ CRITICAL FOR RESPONSIVENESS */
+  align-items: center;
+}
+
+#note-form label {
+  width: 100%;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+#note-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+button {
+  padding: 10px 18px;
+  background-color: #0ba184; /* Teal per lesson */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #088a70;
+}
+
+/* 6. Sticky Notes List - UPDATED CLASS SELECTOR */
+#notes-list {
+  list-style: none;
+  padding: 0;
+}
+
+.note { /* ✅ NOW TARGETS .note CLASS */
+  background-color: #fffbe6; /* Yellow sticky note */
+  border-left: 4px solid #0ba184; /* Teal accent */
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+}
+
+/* 7. Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+/* 8. Footer */
+footer {
+  text-align: center;
+  color: #777;
+  padding: 16px;
+}
+
+/* 9. Mobile Responsive */
+@media (max-width: 600px) {
+  #note-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+  }
+}
