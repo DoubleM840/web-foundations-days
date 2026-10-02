@@ -1,79 +1,86 @@
-// --- SECTION 1: SELECT DOM ELEMENTS ---
-// Always verify these return actual elements, not null!
-const form = document.querySelector("#note-form");
-const input = document.querySelector("#note-input");
-const list = document.querySelector("#notes-list");
-const countDisplay = document.querySelector("#note-count");
+// --- SELECT ELEMENTS ---
+const textarea = document.querySelector("#note-text");
+const charCount = document.querySelector("#char-count");
+const wordCount = document.querySelector("#word-count");
+const clearBtn = document.querySelector("#clear-btn");
+const themeToggle = document.querySelector("#theme-toggle");
 
-// Use a constant for storage key to prevent typos
-const STORAGE_KEY = "quicknotes";
+// --- CONSTANTS ---
+const DRAFT_KEY = "quicknotes-draft";
+const THEME_KEY = "quicknotes-theme";
+const MAX_CHARS = 200;
+const WARNING_THRESHOLD = 180;
 
-// --- SECTION 2: LOAD DATA FROM LOCALSTORAGE ---
-// localStorage only stores strings, so we parse JSON back to array
-let notes = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-
-function saveNotes() {
-    // Convert array back to string for storage
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+// --- CORE FUNCTION: UPDATE COUNTERS & CLASSES ---
+function updateCounts() {
+    const text = textarea.value;
+    const charLen = text.length;
+    
+    // Word count: split by whitespace, filter out empty strings
+    const words = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
+    
+    // Update text
+    charCount.textContent = `${charLen} / ${MAX_CHARS} characters`;
+    wordCount.textContent = `${words} words`;
+    
+    // Update classes
+    charCount.classList.remove("warning", "over");
+    if (charLen > MAX_CHARS) {
+        charCount.classList.add("over");
+    } else if (charLen > WARNING_THRESHOLD) {
+        charCount.classList.add("warning");
+    }
+    
+    // Save draft on every input
+    localStorage.setItem(DRAFT_KEY, text);
 }
 
-// --- SECTION 3: RENDER FUNCTION (The Single Source of Truth) ---
-// NEVER manipulate DOM directly. Always update data → call render()
-function renderNotes() {
-    // Clear existing list completely
-    list.innerHTML = "";
-    
-    // Update count with correct grammar
-    const noteWord = notes.length === 1 ? "note" : "notes";
-    countDisplay.textContent = `You have ${notes.length} ${noteWord}.`;
-    
-    // Rebuild list from current data array
-    notes.forEach((note) => {
-        const li = document.createElement("li");
-        li.classList.add("note");
-        
-        // SAFE text insertion (prevents XSS attacks)
-        const textSpan = document.createElement("span");
-        textSpan.textContent = note.text;
-        
-        // Delete button with closure to remember specific note ID
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
-        deleteBtn.classList.add("delete-btn");
-        deleteBtn.addEventListener("click", () => {
-            notes = notes.filter((n) => n.id !== note.id);
-            saveNotes();
-            renderNotes();
-        });
-        
-        li.appendChild(textSpan);
-        li.appendChild(deleteBtn);
-        list.appendChild(li);
-    });
-}
+// --- EVENT LISTENERS ---
 
-// --- SECTION 4: EVENT LISTENERS ---
-form.addEventListener("submit", (event) => {
-    // CRITICAL: Prevents page reload which would wipe unsaved data
-    event.preventDefault();
-    
-    const text = input.value.trim();
-    
-    // Validation: reject empty or whitespace-only notes
-    if (text === "") return;
-    
-    // Add new note object to array
-    notes.push({
-        id: Date.now(), // Unique timestamp-based ID
-        text: text
-    });
-    
-    // Save → Render → Clear Input
-    saveNotes();
-    renderNotes();
-    input.value = "";
-    input.focus();
+// 1. Live update on every keystroke/paste
+textarea.addEventListener("input", updateCounts);
+
+// 2. Clear button functionality
+clearBtn.addEventListener("click", () => {
+    textarea.value = "";
+    updateCounts(); // Resets counters and removes classes
+    localStorage.removeItem(DRAFT_KEY);
+    textarea.focus();
 });
 
-// --- SECTION 5: INITIAL RENDER ON PAGE LOAD ---
-renderNotes();
+// 3. Escape key clears textarea
+textarea.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        textarea.value = "";
+        updateCounts();
+        localStorage.removeItem(DRAFT_KEY);
+    }
+});
+
+// 4. Theme Toggle with Persistence
+function applyTheme(isDark) {
+    document.body.classList.toggle("dark", isDark);
+    themeToggle.textContent = isDark ? "Light mode" : "Dark mode";
+    localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
+}
+
+themeToggle.addEventListener("click", () => {
+    const isCurrentlyDark = document.body.classList.contains("dark");
+    applyTheme(!isCurrentlyDark);
+});
+
+// --- INITIALIZATION ON LOAD ---
+// Restore draft
+const savedDraft = localStorage.getItem(DRAFT_KEY);
+if (savedDraft !== null) {
+    textarea.value = savedDraft;
+}
+
+// Restore theme
+const savedTheme = localStorage.getItem(THEME_KEY);
+if (savedTheme === "dark") {
+    applyTheme(true);
+}
+
+// Initial counter update
+updateCounts();
