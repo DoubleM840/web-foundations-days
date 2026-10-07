@@ -3,12 +3,12 @@
 ## Assumptions
 - 10,000,000 registered users, 10% active daily = 1,000,000 DAU.
 - Each active user uploads 1 photo and views 50 feed pages per day.
-- Photo: 2 MB. Thumbnail: 50 KB. 1 day â‰ˆ 100,000 seconds. Peak = 5x average.
+- Photo: 2 MB. Thumbnail: 50 KB. 1 day ˜ 100,000 seconds. Peak = 5x average.
 
 ## Estimates
-- Uploads: 1,000,000/day â‰ˆ 10 per second (peak â‰ˆ 50/s).
-- Feed views: 50,000,000/day â‰ˆ 500 per second (peak â‰ˆ 2,500/s).
-- Storage: 1,000,000 Ã— 2.05 MB â‰ˆ 2 TB/day â‰ˆ 750 TB/year.
+- Uploads: 1,000,000/day ˜ 10 per second (peak ˜ 50/s).
+- Feed views: 50,000,000/day ˜ 500 per second (peak ˜ 2,500/s).
+- Storage: 1,000,000 × 2.05 MB ˜ 2 TB/day ˜ 750 TB/year.
 
 ## Read-heavy or write-heavy?
 Very read-heavy: about 50 feed views for every upload. We should make reads cheap (CDN for images, cache for feeds, read replicas) and keep uploads reliable rather than instant.
