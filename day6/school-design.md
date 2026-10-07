@@ -16,7 +16,3 @@
 I would add an index on `enrolments(student_id)`:
 ```sql
 CREATE INDEX idx_enrolments_student ON enrolments(student_id);
-
-## SQL vs NoSQL Decision
-
-For this school system, **SQL is the clear choice**. Student-course relationships are highly structured with strict integrity requirements: every enrolment must reference valid students and courses, emails must be unique, and grades must follow academic standards. Relational databases enforce these rules at the schema level through foreign keys, UNIQUE constraints, and CHECK constraints. NoSQL document stores would require application-level validation for these rules, increasing the risk of orphaned records or inconsistent data. Additionally, the reporting queries (counting students per course, finding unenrolled students) rely on JOINs and aggregations where SQL excels. While NoSQL might suit a flexible learning management system with varying content types, a core enrollment registry demands relational integrity above all else.
